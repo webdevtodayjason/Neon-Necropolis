@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💀⚡ NEON NECROPOLIS - Cyberpunk Auto-Shooter</title>
+  <meta name="description" content="Survive the neon apocalypse. Your weapons fire themselves. You just need to stay alive.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas" width="1280" height="720"></canvas>
+
+    <!-- HUD Overlay -->
+    <div id="hud">
+      <div id="health-bar">
+        <div id="health-fill"></div>
+        <span id="health-text">100/100</span>
+      </div>
+
+      <div id="xp-bar">
+        <div id="xp-fill"></div>
+        <span id="level-text">Level 1</span>
+      </div>
+
+      <div id="stats">
+        <span id="timer">00:00</span>
+        <span id="kill-count">Kills: 0</span>
+        <span id="wave-number">Wave 1</span>
+      </div>
+    </div>
+
+    <!-- Level-Up Screen (hidden initially) -->
+    <div id="level-up-screen" class="modal hidden">
+      <h1 class="glitch">LEVEL UP!</h1>
+      <div id="weapon-choices"></div>
+    </div>
+
+    <!-- Game Over Screen (hidden initially) -->
+    <div id="game-over-screen" class="modal hidden">
+      <h1 class="glitch">GAME OVER</h1>
+      <div id="game-over-stats"></div>
+      <button id="retry-button">TRY AGAIN</button>
+    </div>
+
+    <!-- Victory Screen (hidden initially) -->
+    <div id="victory-screen" class="modal hidden">
+      <h1 class="glitch">VICTORY</h1>
+      <p class="subtitle">You survived the neon apocalypse!</p>
+      <div id="victory-stats"></div>
+      <button id="play-again-button">PLAY AGAIN</button>
+    </div>
+
+    <!-- Main Menu (shown on load) -->
+    <div id="main-menu" class="modal">
+      <h1 class="title">
+        <span class="neon-text cyan">NEON</span>
+        <span class="neon-text magenta">NECROPOLIS</span>
+      </h1>
+      <p class="subtitle">Survive. Level Up. Discover Synergies.</p>
+
+      <div class="menu-buttons">
+        <button id="start-button" class="primary-button">START GAME</button>
+        <button id="instructions-button">HOW TO PLAY</button>
+        <button id="high-scores-button">HIGH SCORES</button>
+      </div>
+
+      <div class="controls">
+        <h3>Controls</h3>
+        <p><strong>WASD / Arrow Keys</strong> - Move</p>
+        <p><strong>Weapons</strong> - Auto-fire (no aiming needed!)</p>
+        <p><strong>ESC</strong> - Pause</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
