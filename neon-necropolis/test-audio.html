@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON NECROPOLIS - Audio Test</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a1a;
+            color: #00ffff;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+        }
+        .section {
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .section h2 {
+            color: #ff00ff;
+            margin-top: 0;
+        }
+        button {
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            border: none;
+            color: #0a0a1a;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            transition: transform 0.1s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .status {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .warning {
+            background: rgba(255, 255, 0, 0.1);
+            border: 2px solid #ffff00;
+            color: #ffff00;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎵 NEON NECROPOLIS 🎵</h1>
+    <h2 style="text-align: center; color: #00ffff;">Audio System Test</h2>
+
+    <div class="warning">
+        ⚠️ <strong>IMPORTANT:</strong> Click "Initialize Audio" first before testing sounds!
+    </div>
+
+    <div class="section">
+        <h2>🎛️ System Controls</h2>
+        <button onclick="initAudio()">Initialize Audio</button>
+        <button onclick="showStatus()">Show Status</button>
+        <div id="status" class="status" style="display: none;"></div>
+    </div>
+
+    <div class="section">
+        <h2>🎶 Music Controls</h2>
+        <button onclick="startMusic()">Start Music</button>
+        <button onclick="stopMusic()">Stop Music</button>
+        <br>
+        <button onclick="setIntensity('calm')">Calm 🌙</button>
+        <button onclick="setIntensity('low')">Low 🔥</button>
+        <button onclick="setIntensity('medium')">Medium ⚡</button>
+        <button onclick="setIntensity('high')">High 💥</button>
+        <button onclick="setIntensity('boss')">Boss 💀</button>
+    </div>
+
+    <div class="section">
+        <h2>🔫 Weapon Sounds</h2>
+        <div class="grid">
+            <button onclick="playSound('playPistol')">Pistol</button>
+            <button onclick="playSound('playShotgun')">Shotgun</button>
+            <button onclick="playSound('playLaser')">Laser</button>
+            <button onclick="playSound('playLightning')">Lightning</button>
+            <button onclick="playSound('playMissile')">Missile</button>
+            <button onclick="playSound('playFlamethrower')">Flamethrower</button>
+            <button onclick="playSound('playTesla')">Tesla</button>
+            <button onclick="playSound('playIce')">Ice</button>
+            <button onclick="playSound('playOrbital')">Orbital</button>
+            <button onclick="playSound('playPoison')">Poison</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🧟 Enemy Sounds</h2>
+        <div class="grid">
+            <button onclick="playSound('playZombieMoan')">Zombie Moan</button>
+            <button onclick="playSound('playEnemyDeath')">Enemy Death</button>
+            <button onclick="playSound('playExploderBeep')">Exploder Beep</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>👤 Player Sounds</h2>
+        <div class="grid">
+            <button onclick="playSound('playXPPickup')">XP Pickup</button>
+            <button onclick="playSound('playLevelUp')">Level Up</button>
+            <button onclick="playSound('playPlayerDamage')">Player Damage</button>
+            <button onclick="playSound('playPlayerDeath')">Player Death</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🌆 Ambient Sounds</h2>
+        <div class="grid">
+            <button onclick="playSound('playHeartbeat')">Heartbeat</button>
+            <button onclick="playSound('playBossSiren')">Boss Siren</button>
+            <button onclick="playSound('playExplosion')">Explosion</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🔊 Volume Controls</h2>
+        <label>Master Volume: <input type="range" id="masterVol" min="0" max="100" value="70" oninput="setMasterVolume(this.value)"></label>
+        <span id="masterVolLabel">70%</span><br>
+        <label>SFX Volume: <input type="range" id="sfxVol" min="0" max="100" value="80" oninput="setSFXVolume(this.value)"></label>
+        <span id="sfxVolLabel">80%</span><br>
+        <label>Music Volume: <input type="range" id="musicVol" min="0" max="100" value="50" oninput="setMusicVolume(this.value)"></label>
+        <span id="musicVolLabel">50%</span>
+    </div>
+
+    <div class="section">
+        <h2>🧪 Demo Sequences</h2>
+        <button onclick="runFullDemo()">Full Demo (55s)</button>
+        <button onclick="quickTest()">Quick Test (1s)</button>
+        <button onclick="testWeapons()">All Weapons (8s)</button>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; color: #666;">
+        <p>NEON NECROPOLIS - Procedural Audio System</p>
+        <p>Built with Web Audio API - No audio files required!</p>
+    </div>
+
+    <script type="module">
+        // This would normally import from the compiled JS
+        // For now, it shows the structure
+        
+        window.initAudio = async function() {
+            alert('Audio system would initialize here.\n\nIn production, this loads:\n- AudioManager\n- SynthEngine\n- SoundEffects\n- MusicManager');
+            document.getElementById('status').style.display = 'block';
+            document.getElementById('status').innerHTML = '✅ Audio Initialized (Demo Mode)';
+        };
+
+        window.showStatus = function() {
+            document.getElementById('status').style.display = 'block';
+            document.getElementById('status').innerHTML = `
+                <strong>Audio System Status:</strong><br>
+                Initialized: Yes<br>
+                Master Volume: 70%<br>
+                SFX Volume: 80%<br>
+                Music Volume: 50%<br>
+                Music Playing: No<br>
+                Active Sounds: 0
+            `;
+        };
+
+        window.startMusic = function() {
+            console.log('🎶 Starting music...');
+            alert('Music would start here!');
+        };
+
+        window.stopMusic = function() {
+            console.log('🔇 Stopping music...');
+            alert('Music would stop here!');
+        };
+
+        window.setIntensity = function(level) {
+            console.log('📊 Setting intensity:', level);
+            alert('Music intensity: ' + level);
+        };
+
+        window.playSound = function(soundName) {
+            console.log('🔊 Playing:', soundName);
+        };
+
+        window.setMasterVolume = function(val) {
+            document.getElementById('masterVolLabel').textContent = val + '%';
+        };
+
+        window.setSFXVolume = function(val) {
+            document.getElementById('sfxVolLabel').textContent = val + '%';
+        };
+
+        window.setMusicVolume = function(val) {
+            document.getElementById('musicVolLabel').textContent = val + '%';
+        };
+
+        window.runFullDemo = function() {
+            alert('Full demo would run here (55 seconds of sounds)');
+        };
+
+        window.quickTest = function() {
+            alert('Quick test: pistol → explosion → level up');
+        };
+
+        window.testWeapons = function() {
+            alert('Testing all 10 weapon sounds sequentially');
+        };
+
+        console.log('🎵 Audio test page loaded!');
+        console.log('📝 To test with real audio:');
+        console.log('   1. Build project: npm run build');
+        console.log('   2. Serve: npm run dev');
+        console.log('   3. Import actual audio modules');
+    </script>
+</body>
+</html>
