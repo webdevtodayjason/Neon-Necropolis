@@ -1,6 +1,8 @@
 /**
  * Base zombie entity class
  */
+import { getAssetManager } from '../assets/AssetManager';
+
 export interface ZombieConfig {
     type: string;
     health: number;
@@ -100,29 +102,49 @@ export class Zombie {
      * Render the zombie
      */
     render(ctx: CanvasRenderingContext2D): void {
+        const assetManager = getAssetManager();
         ctx.save();
 
-        // Draw zombie body with glow
-        ctx.shadowColor = this.color;
-        ctx.shadowBlur = 10;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
+        // Get sprite key for this zombie type
+        const spriteKey = assetManager.getEnemySpriteKey(this.type);
+        const sprite = assetManager.getSprite(spriteKey);
+        const spriteSize = this.radius * 2.5;
 
-        // Draw health bar
+        if (sprite?.loaded) {
+            // Create circular clipping path to hide square background
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius * 1.3, 0, Math.PI * 2);
+            ctx.clip();
+
+            // Draw sprite within clip
+            const scale = spriteSize / sprite.width;
+            const w = sprite.width * scale;
+            const h = sprite.height * scale;
+            ctx.drawImage(sprite.image, this.x - w / 2, this.y - h / 2, w, h);
+        } else {
+            // Fallback to basic rendering if sprite not loaded
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.restore();
+
+        // Draw health bar (outside clip)
+        ctx.save();
         const barWidth = this.radius * 2;
         const barHeight = 4;
         const barY = this.y - this.radius - 10;
 
-        ctx.shadowBlur = 0;
         ctx.fillStyle = '#333';
         ctx.fillRect(this.x - barWidth / 2, barY, barWidth, barHeight);
 
         const healthPercent = this.health / this.maxHealth;
         ctx.fillStyle = healthPercent > 0.5 ? '#0f0' : healthPercent > 0.25 ? '#ff0' : '#f00';
         ctx.fillRect(this.x - barWidth / 2, barY, barWidth * healthPercent, barHeight);
-
         ctx.restore();
     }
 }

@@ -15,7 +15,7 @@ export class HUD {
     /**
      * Render the HUD
      */
-    render(player: Player, gameTime: number, wave: number, zombieCount: number): void {
+    render(player: Player, gameTime: number, wave: number, zombieCount: number, lives: number = 3): void {
         this.ctx.save();
 
         // Draw health bar
@@ -27,6 +27,9 @@ export class HUD {
         // Draw level
         this.drawLevel(player);
 
+        // Draw lives
+        this.drawLives(lives);
+
         // Draw timer
         this.drawTimer(gameTime);
 
@@ -35,6 +38,61 @@ export class HUD {
 
         // Draw stats
         this.drawStats(player, zombieCount);
+
+        this.ctx.restore();
+    }
+
+    /**
+     * Draw lives display
+     */
+    private drawLives(lives: number): void {
+        const x = 20;
+        const y = 120;
+        const heartSize = 20;
+        const spacing = 25;
+
+        this.ctx.font = 'bold 14px monospace';
+        this.ctx.fillStyle = '#fff';
+        this.ctx.textAlign = 'left';
+        this.ctx.textBaseline = 'top';
+        this.ctx.fillText('LIVES:', x, y);
+
+        // Draw hearts for lives
+        for (let i = 0; i < 3; i++) {
+            const heartX = x + 60 + i * spacing;
+            const heartY = y + 2;
+
+            if (i < lives) {
+                // Full heart
+                this.drawHeart(heartX, heartY, heartSize, '#ff0055', '#ff3377');
+            } else {
+                // Empty heart
+                this.drawHeart(heartX, heartY, heartSize, '#333', '#444');
+            }
+        }
+    }
+
+    /**
+     * Draw a heart shape
+     */
+    private drawHeart(x: number, y: number, size: number, fillColor: string, glowColor: string): void {
+        this.ctx.save();
+        this.ctx.shadowColor = glowColor;
+        this.ctx.shadowBlur = 8;
+        this.ctx.fillStyle = fillColor;
+
+        this.ctx.beginPath();
+        const topY = y + size * 0.3;
+        const bottomY = y + size;
+
+        // Left arc
+        this.ctx.arc(x - size * 0.25, topY, size * 0.3, Math.PI, 0, false);
+        // Right arc
+        this.ctx.arc(x + size * 0.25, topY, size * 0.3, Math.PI, 0, false);
+        // Bottom point
+        this.ctx.lineTo(x, bottomY);
+        this.ctx.closePath();
+        this.ctx.fill();
 
         this.ctx.restore();
     }

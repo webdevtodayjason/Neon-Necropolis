@@ -1,6 +1,8 @@
 /**
  * Projectile entity with pooling support
  */
+import { getAssetManager } from '../assets/AssetManager';
+
 export interface ProjectileConfig {
     x: number;
     y: number;
@@ -114,26 +116,44 @@ export class Projectile {
      * Render the projectile
      */
     render(ctx: CanvasRenderingContext2D): void {
+        const assetManager = getAssetManager();
         ctx.save();
 
-        // Draw projectile with glow
-        ctx.shadowColor = this.color;
-        ctx.shadowBlur = 10;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Draw trail based on velocity
         const angle = Math.atan2(this.vy, this.vx);
-        ctx.shadowBlur = 5;
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = this.radius;
-        ctx.globalAlpha = 0.5;
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x - Math.cos(angle) * this.radius * 3, this.y - Math.sin(angle) * this.radius * 3);
-        ctx.stroke();
+
+        // Get sprite key for this weapon type
+        const spriteKey = assetManager.getWeaponEffectKey(this.weaponType);
+        const spriteSize = this.radius * 4;
+
+        // Try to render sprite
+        const rendered = assetManager.drawSpriteCentered(
+            ctx,
+            spriteKey,
+            this.x,
+            this.y,
+            spriteSize / 512, // Scale factor (sprites are 512x512)
+            angle
+        );
+
+        // Fallback to basic rendering if sprite not loaded
+        if (!rendered) {
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw trail
+            ctx.shadowBlur = 5;
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = this.radius;
+            ctx.globalAlpha = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x - Math.cos(angle) * this.radius * 3, this.y - Math.sin(angle) * this.radius * 3);
+            ctx.stroke();
+        }
 
         ctx.restore();
     }
